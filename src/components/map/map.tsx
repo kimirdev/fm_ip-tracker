@@ -1,9 +1,18 @@
 import { LatLngExpression } from "leaflet";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 
+import { icon } from "leaflet"
+import marker from '../../assets/marker.svg'
+
 type MapProperties = {
   position: LatLngExpression,
 }
+
+
+const ICON = icon({
+  iconUrl: marker,
+  iconSize: [32, 32],
+})
 
 function ChangeView({ position } : MapProperties) {
 
@@ -26,7 +35,7 @@ export default function Map({ position } : MapProperties) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <ChangeView position={position} />
-      <Marker position={position}>
+      <Marker position={position} icon={ICON}>
         <Popup>
           A pretty CSS3 popup. <br /> Easily customizable.
         </Popup>
