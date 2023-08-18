@@ -3,8 +3,9 @@ import 'leaflet/dist/leaflet.css'
 import Map from './components/map'
 import Form from './components/form'
 import { useEffect, useState } from 'react'
-import { getGeolocation, getGeolocationByIpOrDomain } from './api'
-import offsetToUtcFormat from './helpers/offsetToUtcFormat'
+import { getGeolocation } from './api'
+// import { getGeolocation, getGeolocationByIpOrDomain } from './api'
+// import offsetToUtcFormat from './helpers/offsetToUtcFormat'
 
 type InfoType = {
   ip: string,
@@ -24,31 +25,54 @@ function App() {
     getGeolocation()
       .then(data => {
         setInfo({
-          ip: data.query,
-          location: `${data.country || ""}, ${data.city || ""}, ${data.regionName || ""} ${data.zip || ""}`,
-          timeZone: offsetToUtcFormat(data.offset),
+          ip: data.ip,
+          location: `${data.location.country}, ${data.location.region}, ${data.location.city} ${data.location.postalCode}`,
+          timeZone: `UTC ${data.location.timezone}`,
           isp: data.isp,
-          lattitude: data.lat,
-          longitude: data.lon,
+          lattitude: data.location.lat,
+          longitude: data.location.lng,
         })
       })
+    // getGeolocation()
+    //   .then(data => {
+    //     setInfo({
+    //       ip: data.query,
+    //       location: `${data.country || ""}, ${data.city || ""}, ${data.regionName || ""} ${data.zip || ""}`,
+    //       timeZone: offsetToUtcFormat(data.offset),
+    //       isp: data.isp,
+    //       lattitude: data.lat,
+    //       longitude: data.lon,
+    //     })
+    //   })
   }, [])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    getGeolocationByIpOrDomain(formValue).then(data => {
-      setInfo({
-        ip: data.query,
-        location: `${data.country || ""}, ${data.city || ""}, ${data.regionName || ""} ${data.zip || ""}`,
-        timeZone: offsetToUtcFormat(data.offset),
-        isp: data.isp,
-        lattitude: data.lat,
-        longitude: data.lon,
+    // getGeolocation().then(data => console.log(data))
+    getGeolocation(formValue)
+      .then(data => {
+        setInfo({
+          ip: data.ip,
+          location: `${data.location.country}, ${data.location.region}, ${data.location.city} ${data.location.postalCode}`,
+          timeZone: `UTC ${data.location.timezone}`,
+          isp: data.isp,
+          lattitude: data.location.lat,
+          longitude: data.location.lng,
+        })
       })
-    })
+    // getGeolocationByIpOrDomain(formValue).then(data => {
+    //   setInfo({
+    //     ip: data.query,
+    //     location: `${data.country || ""}, ${data.city || ""}, ${data.regionName || ""} ${data.zip || ""}`,
+    //     timeZone: offsetToUtcFormat(data.offset),
+    //     isp: data.isp,
+    //     lattitude: data.lat,
+    //     longitude: data.lon,
+    //   })
+    // })
 
-    console.log(e)
+    // console.log(e)
   }
   return (
     <>
@@ -82,23 +106,7 @@ function App() {
 
       <main>
         <Map position={[info?.lattitude || 51.505, info?.longitude || -0.09]} />
-        {/* <MapContainer className='min-w-[100vw] h-[calc(100vh-300px)] md:h-[calc(100vh-280px)] z-0' center={[51.505, -0.09]} zoomControl={false} zoom={13}>
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors <br /> Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a> | Coded by <a href="#">Igor</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <Marker position={[51.505, -0.09]}>
-            <Popup>
-              A pretty CSS3 popup. <br /> Easily customizable.
-            </Popup>
-          </Marker>
-        </MapContainer> */}
       </main>
-
-      {/* <footer className='absolute bottom-0 w-28 text-xs bg-white bg-opacity-80'>
-        Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
-        Coded by <a href="#">Igor</a>.
-      </footer> */}
     </>
   )
 }

@@ -8,7 +8,6 @@ type MapProperties = {
   position: LatLngExpression,
 }
 
-
 const ICON = icon({
   iconUrl: marker,
   iconSize: [32, 32],
@@ -22,12 +21,6 @@ function ChangeView({ position } : MapProperties) {
 }
 
 export default function Map({ position } : MapProperties) {
-  // const map = useMap()
-
-  // useEffect(() => {
-  //   map.setView(position)
-  // }, [position, map])
-
   return (
     <MapContainer className='min-w-[100vw] h-[calc(100vh-300px)] md:h-[calc(100vh-280px)] z-0' center={position} zoomControl={false} zoom={13}>
       <TileLayer
